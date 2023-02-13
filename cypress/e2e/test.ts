@@ -1,5 +1,4 @@
-import { When, Then } from "@badeball/cypress-cucumber-preprocessor";
-
+import { When, Then, Given, DataTable } from "@badeball/cypress-cucumber-preprocessor";
 import { fonciaHomepage } from "../support/pages/fonciahomepage";
 import { fonciaresultPage } from "../support/pages/fonciaresultspage";
 
@@ -7,56 +6,57 @@ import { fonciaresultPage } from "../support/pages/fonciaresultspage";
 const testData = require("../fixtures/data.json");
 
 
+Given("l utilisateur navigue sur le site {string}", (site: string) => {
+  cy.visit(site)
+  //vérifier l'atterissage sur la bonne page 
+  cy.url().should('eq', 'https://fr.foncia.com/')
+  //vérifier la bare de recherche de la page d'acceuil 
+  fonciaHomepage.searchbar.should('be.visible')
+  //vérifier la liste du projet à selectionner
+  fonciaHomepage.projectSelector.should('be.visible')
+  //vérifier la liste Types de bien
+  fonciaHomepage.typeBienSelector.should('be.visible')
+  //vérifier le textbox du prix max 
+  fonciaHomepage.prixSelector.should('be.visible')
+  //vérifier le textbox de la ville,département région
+  fonciaHomepage.villeSelector.should('be.visible')
+  //vérifier le bouton rechercher
+  fonciaHomepage.searchButtonSelector.should('be.visible')
 
-  When("aller au site {string}", (url: string) => {
-    cy.visit(url)
-  });
+})
 
-  Then("la page d acceuil d'affiche", () => {
-    //vérifier l'atterissage sur la bonne page 
-    cy.url().should('eq', 'https://fr.foncia.com/')
-    //vérifier la bare de recherche de la page d'acceuil 
-   fonciaHomepage.searchbar.should('be.visible')
-    //vérifier la liste du projet à selectionner
-    fonciaHomepage.projectSelector.should('be.visible')
-    //vérifier la liste Types de bien
-    fonciaHomepage.typeBienSelector.should('be.visible')
-    //vérifier le textbox du prix max 
-    fonciaHomepage.prixSelector.should('be.visible')
-    //vérifier le textbox de la ville,département région
-    fonciaHomepage.villeSelector.should('be.visible')
-    //vérifier le bouton rechercher
-   fonciaHomepage.searchButtonSelector.should('be.visible')
-  });
+When('l utilisateur effectue une recherche de location d appartement', (dataTable: DataTable) => {
 
-  When(`Je choisis {string} un {string} à {string} avec un loyer MAX {string} et je click sur le bouton rechercher`, () => {
+  dataTable.hashes().forEach((element) => {
     //cliquer sur le bouton tout accepter du cookie
     fonciaHomepage.cookiesButton.click()
+
     //cliquer sur louer
-    fonciaHomepage.projectSelector.click().then(() => {
-      fonciaHomepage.rentalcheckbox.click()
-    })
+    fonciaHomepage.projectSelector.click()
+    fonciaHomepage.projet(element.action)
+
     //clicquer sur appartement
-    fonciaHomepage.typeBienSelector.click().then(() => {
-      fonciaHomepage.appartementCheckBox.click()
-    })
+    fonciaHomepage.typeBienSelector.click()
+    fonciaHomepage.typeBien(element.bien)
     // ajouter le prix 
-   fonciaHomepage.prixSelector.type(testData.prixMax)
+    fonciaHomepage.prixSelector.type(element.prix)
+
     //ajouter la ville
-   fonciaHomepage.villeSelector.type(testData.ville).then(() => {
+    fonciaHomepage.villeSelector.type(element.ville).then(() => {
       fonciaHomepage.picklist.find('li').eq(1).click()
     })
     //clicquer sur rechercher 
-    cy.xpath('(//button[@class="p-button p-button-help ng-star-inserted"])[1]').click()
+    fonciaHomepage.searchButtonSelector.click()
+
   });
 
+});
 
-  Then("les resultats sont identiquent à mes critéres", () => {
-    //je vérifie l'existence du bloc filtre
-    fonciaresultPage.filter
-      .should('be.visible');
-      //je vérifie les prix qui doient étre au dessous de 1500 euro
-    fonciaresultPage.checkPrix(`${testData.prixMax}`);
-    // je vérifie la ville qui doit étre Paris
-    fonciaresultPage.checkVille(`${testData.ville}`);
-  });
+Then("l utilisateur verifie les resultats de sa recherche", () => {
+  //je vérifie l'existence du bloc filtre
+  fonciaresultPage.filter.should('be.visible');
+  //je vérifie les prix qui doient étre au dessous de 1500 euro
+  fonciaresultPage.checkPrix(`${testData.prixMax}`);
+  // je vérifie la ville qui doit étre Paris
+  fonciaresultPage.checkVille(`${testData.ville}`);
+});

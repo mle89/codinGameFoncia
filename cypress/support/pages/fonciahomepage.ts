@@ -18,19 +18,29 @@ class fonciaHomepagePage {
         return cy.get(fonciaHomepageSelector.villeSelector)
     }
     get searchButtonSelector() {
-        return cy.get(fonciaHomepageSelector.searchButtonSelector)
+        return cy.xpath(fonciaHomepageSelector.searchButtonSelector)
     }
     get cookiesButton() {
         return cy.get(fonciaHomepageSelector.cookiesButton)
     }
     get rentalcheckbox() {
-        return cy.get(fonciaHomepageSelector.rentalcheckbox)
+        return cy.xpath(fonciaHomepageSelector.rentalcheckbox)
     }
     get appartementCheckBox() {
-        return cy.get(fonciaHomepageSelector.appartementCheckBox)
+        return cy.xpath(fonciaHomepageSelector.appartementCheckBox)
     }
     get picklist() {
         return cy.get(fonciaHomepageSelector.picklist)
+    }
+    projet(projet:string){
+        if(projet == 'Louer'){
+            this.rentalcheckbox.click()
+        }
+    }
+    typeBien(type:string){
+        if(type =='Appartement'){
+            this.appartementCheckBox.click()
+        }
     }
 }
 

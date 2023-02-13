@@ -1,8 +1,8 @@
-Feature: en tant qu'utilisateur non connecte , je dois acceder au site de Foncia et rechercher un appartement
-  Scenario: connexion au site de Foncia
-    When aller au site "https://fr.foncia.com"
-    Then la page d acceuil d'affiche
-
-  Scenario: Louer un appartement
-    When Je choisis "Louer" un "appartement" à "Paris" avec un loyer MAX "1500" et je click sur le bouton rechercher
-    Then les resultats sont identiquent à mes critéres
+Feature: Recherche d'un bien de location sur le site de Foncia
+  
+  Scenario: Recherche d'un bien de location sur le site de Foncia
+    Given l utilisateur navigue sur le site "https://fr.foncia.com"
+    When  l utilisateur effectue une recherche de location d appartement
+    | action | bien        | ville | prix |
+    | Louer  | Appartement | paris | 1500 |
+    Then  l utilisateur verifie les resultats de sa recherche

@@ -50,14 +50,13 @@ async function setupNodeEvents(
 export default defineConfig({
   chromeWebSecurity: false,
   defaultCommandTimeout: 60000,
-  video: true,
-  reporter: "cypress-mochawesome-reporter",
+  video: false,
+  reporter: "mochawesome",
   reporterOptions: {
     reportDir: "cypress/reports",
     charts: true,
     reportPageTitle: "Foncia Autoamtion report",
-    reportFilename: "[status]-[datetime]-fullreport",
-    timestamp: "yyyy-mm-dd_HH-MM-ss",
+    reportFilename: "fonciaReport",
   },
   e2e: {
     // This parameter allows navigating between different domains
